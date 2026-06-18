@@ -8,6 +8,8 @@
 
 *.DS_Store
 .depend
+__pycache__/
+*.pyc
 
 # Ignore test executable
 /tests/tests
