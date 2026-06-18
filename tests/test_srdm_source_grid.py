@@ -43,6 +43,8 @@ class SRDMSourceGridTests(unittest.TestCase):
         self.assertIn("sample_size", text)
         self.assertIn("1234", text)
         self.assertIn("DM_cross_section_electron", text)
+        self.assertIn("SHM_v0\t\t=\t238.0", text)
+        self.assertIn("SHM_vObserver\t=\t(11.1, 250.2, 7.3)", text)
 
     def test_flux_summary_and_reference_eta(self):
         point = grid.GridPoint(index=0, mass_mev=1.0, sigma_e_cm2=1.0e-36)
