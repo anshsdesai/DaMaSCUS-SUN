@@ -32,6 +32,19 @@ sbatch --account=<account> --partition=<partition> --time=02:00:00 \
   --ntasks=4 --array=0,18,456,474 scripts/talapas/srdm_source_grid_pilot.sbatch
 ```
 
+If you prefer the Talapas documentation style where the resource choices live
+inside the script, edit and submit:
+
+```bash
+sbatch scripts/talapas/srdm_source_grid_pilot_compute.sbatch
+```
+
+That concrete pilot script uses the open `compute` partition, 36 MPI ranks per
+pilot point, and the `0,18,456,474%4` array.  Slurm gives each array element its
+own allocation, so four pilot points can run at once when resources are
+available.  If queue time is long or you want to be gentler, change `%4` to `%1`
+or `%2`.
+
 After the pilot finishes, validate the source files and downstream consumers:
 
 ```bash
