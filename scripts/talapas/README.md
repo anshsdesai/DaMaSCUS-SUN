@@ -66,6 +66,18 @@ sbatch --account=<account> --partition=<partition> --time=04:00:00 \
   --ntasks=8 --array=0-474%24 scripts/talapas/srdm_source_grid_array.sbatch
 ```
 
+For the concrete Talapas script-style setup, submit the production array with:
+
+```bash
+sbatch scripts/talapas/srdm_source_grid_production_compute.sbatch
+```
+
+The production script uses `--array=0-474%8`, so every source-grid point is a
+separate Slurm allocation with 36 MPI ranks, and at most 8 points run
+concurrently.  Keep it on `compute` if pilot timings are comfortably below one
+day.  Switch `--partition=compute` to `--partition=computelong` only for points
+that need more than the `compute` partition walltime.
+
 ## QA And Pass 2
 
 ```bash
@@ -81,3 +93,26 @@ results/srdm_fdmq2_source_grid_v1/qa_report.tsv
 
 Use `summary.pass2_recommended_points` from `qa_report.json` as the second-pass
 array list, with a larger sample size such as `SAMPLE_SIZE=1000000`.
+
+## Slurm Log Summary
+
+After downloading Talapas logs, summarize completed and incomplete array tasks with:
+
+```bash
+python3 scripts/talapas/summarize_srdm_slurm_logs.py \
+  --job-id <array-job-id> \
+  --results-root results/srdm_fdmq2_source_grid_v1 \
+  --output-dir logs
+```
+
+This writes:
+
+```text
+logs/srdm_slurm_log_summary.tsv
+logs/srdm_rerun_indices.txt
+logs/srdm_more_time_indices.txt
+```
+
+Use `srdm_rerun_indices.txt` as the next Slurm array list, and use
+`srdm_more_time_indices.txt` for points that likely need a longer walltime or a
+smaller first-pass sample size.
